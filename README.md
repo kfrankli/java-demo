@@ -1,6 +1,6 @@
 Rework of https://github.com/nkunkee/demo_java_jersey --> https://github.com/kfrankli/demo_java_jersey --> https://github.com/jeckste/java-demo --> https://github.com/kfrankli/java-demo.git for uber jar on OCP
 
-
+![Pipeline Diagram](/image/demo-app-pipeline.png )
 
 # Setup/Install Instructions
 
