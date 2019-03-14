@@ -23,11 +23,11 @@ oc new-project $PROJECT_NAME-dev
 
 oc new-project  $PROJECT_NAME-prod
 
-# This will process the template files. 
+# This will process the template files.
 
 oc process -f .openshift/cicd.yaml -p APP_NAME=$APP_NAME PROJECT_NAME=$PROJECT_NAME | oc create -f - -n $PROJECT_NAME-cicd
 
-oc process -f .openshift/dev.yaml -p APP_NAME=$APP_NAME PROJECT_NAME=$PROJECT_NAME-dev CICD_PROJECT_NAME=$PROJECT_NAME-cicd | 
+oc process -f .openshift/dev.yaml -p APP_NAME=$APP_NAME PROJECT_NAME=$PROJECT_NAME-dev CICD_PROJECT_NAME=$PROJECT_NAME-cicd | oc create -f - -n $PROJECT_NAME-dev
 
 oc process -f .openshift/prod.yaml -p APP_NAME=$APP_NAME PROJECT_NAME=$PROJECT_NAME-prod CICD_PROJECT_NAME=$PROJECT_NAME-cicd IMAGE_STREAM_NAMESPACE=$PROJECT_NAME-prod | oc create -f - -n $PROJECT_NAME-prod
 ```
