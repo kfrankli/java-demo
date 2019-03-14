@@ -13,47 +13,47 @@ objects:
     annotations:
       description: The application's http port.
     labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}
+      application: ${APP_NAME}
+    name: ${APP_NAME}
   spec:
     ports:
     - port: 8080
       targetPort: 8080
     selector:
-      deploymentConfig: ${APPLICATION_NAME}
+      deploymentConfig: ${APP_NAME}
 - apiVersion: v1
-  id: ${APPLICATION_NAME}-http
+  id: ${APP_NAME}-http
   kind: Route
   metadata:
     annotations:
       description: Route for application's http service.
     labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}
+      application: ${APP_NAME}
+    name: ${APP_NAME}
   spec:
     host: ${HOSTNAME_HTTP}
     tls:
       insecureEdgeTerminationPolicy: Allow
       termination: edge
     to:
-      name: ${APPLICATION_NAME}
+      name: ${APP_NAME}
 - apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}
+      application: ${APP_NAME}
+    name: ${APP_NAME}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}
+      application: ${APP_NAME}
+    name: ${APP_NAME}
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:latest
+        name: ${APP_NAME}:latest
     source:
       contextDir: ${CONTEXT_DIR}
       git:
@@ -82,28 +82,28 @@ objects:
   kind: DeploymentConfig
   metadata:
     labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}
+      application: ${APP_NAME}
+    name: ${APP_NAME}
   spec:
     replicas: 1
     selector:
-      deploymentConfig: ${APPLICATION_NAME}
+      deploymentConfig: ${APP_NAME}
     strategy:
       type: Recreate
     template:
       metadata:
         labels:
-          application: ${APPLICATION_NAME}
-          deploymentConfig: ${APPLICATION_NAME}
-        name: ${APPLICATION_NAME}
+          application: ${APP_NAME}
+          deploymentConfig: ${APP_NAME}
+        name: ${APP_NAME}
       spec:
         containers:
         - env:
           - name: JAVA_APP_JAR
             value: ${FAT_JAR_NAME}
-          image: ${APPLICATION_NAME}
+          image: ${APP_NAME}
           imagePullPolicy: Always
-          name: ${APPLICATION_NAME}
+          name: ${APP_NAME}
           ports:
           - containerPort: 8778
             name: jolokia
@@ -119,18 +119,41 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - ${APPLICATION_NAME}
+        - ${APP_NAME}
         from:
           kind: ImageStreamTag
-          name: ${APPLICATION_NAME}:latest
+          name: ${APP_NAME}:latest
       type: ImageChange
     - type: ConfigChange
+- apiVersion: v1
+  groupNames: null
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: jenkins_edit
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    name: edit
+  subjects:
+  - kind: ServiceAccount
+    name: ${SA_NAME}
+    namespace: ${PROJECT_NAME}
+  userNames:
+  - system:serviceaccount:${CICD_PROJECT_NAME}:${SA_NAME}
 parameters:
 - description: The name for the application.
   displayName: Application Name
-  name: APPLICATION_NAME
+  name: APP_NAME
   required: true
   value: wustl-app
+- description: Name of a service account that can deploy to this project
+  name: SA_NAME
+  required: true
+  value: jenkins
+- name: PROJECT_NAME
+  required: true
+- name: CICD_PROJECT_NAME
+  required: true
 - description: Name of the compiled app FAT JAR
   displayName: Compiled FAT JAR name
   name: FAT_JAR_NAME
