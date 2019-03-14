@@ -174,15 +174,9 @@ objects:
             stage 'build'
             openshiftBuild(buildConfig: '${APP_NAME}', showBuildLogs: 'true', namespace: '${PROJECT_NAME}-dev')
 
-            stage 'deployToDev'
-            openshiftDeploy(deploymentConfig: '${APP_NAME}', namespace: '${PROJECT_NAME}-dev')
-
             stage 'promoteToProd'
             input message: 'Promote to production ?', ok: '\'Yes\''
             openshiftTag(sourceStream: '${APPLICATION_NAME}', sourceTag: 'dev', destinationStream: '${APPLICATION_NAME}', destinationTag: 'prod' , namespace: '${PROJECT_NAME}-dev', destinationNamespace: '${PROJECT_NAME}-dev')
-
-            stage 'deployToProd'
-            openshiftDeploy(deploymentConfig: '${APPLICATION_NAME}', namespace: '${PROJECT_NAME}-prod')
           }
 parameters:
 - description: The name for the application.
