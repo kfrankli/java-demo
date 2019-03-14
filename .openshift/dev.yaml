@@ -53,7 +53,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APP_NAME}:latest
+        name: ${APP_NAME}:dev
     source:
       contextDir: ${CONTEXT_DIR}
       git:

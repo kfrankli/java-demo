@@ -153,5 +153,5 @@ parameters:
   generate: expression
   name: GENERIC_WEBHOOK_SECRET
   required: true
--   name: IMAGE_STREAM_NAMESPACE
+- name: IMAGE_STREAM_NAMESPACE
   required: true
