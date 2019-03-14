@@ -176,7 +176,7 @@ objects:
 
             stage 'promoteToProd ${PROJECT_NAME}-prod'
             input message: 'Promote to production ?', ok: '\'Yes\''
-            openshiftTag(sourceStream: '${APP_NAME}', sourceTag: 'dev', destinationStream: '${APP_NAME}', destinationTag: 'prod' , namespace: '${PROJECT_NAME}-dev', destinationNamespace: '${PROJECT_NAME}-dev')
+            openshiftTag(sourceStream: '${APP_NAME}', sourceTag: 'dev', destinationStream: '${APP_NAME}', destinationTag: 'prod' , namespace: '${PROJECT_NAME}-dev', destinationNamespace: '${PROJECT_NAME}-prod')
 
             stage 'deployToProd ${PROJECT_NAME}-prod'
             openshiftDeploy(deploymentConfig: '${APP_NAME}', namespace: '${PROJECT_NAME}-prod')
