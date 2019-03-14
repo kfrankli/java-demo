@@ -171,12 +171,15 @@ objects:
       jenkinsPipelineStrategy:
         jenkinsfile: |-
           node() {
-            stage 'build'
+            stage 'build in ${PROJECT_NAME}-dev'
             openshiftBuild(buildConfig: '${APP_NAME}', showBuildLogs: 'true', namespace: '${PROJECT_NAME}-dev')
 
-            stage 'promoteToProd'
+            stage 'promoteToProd ${PROJECT_NAME}-prod'
             input message: 'Promote to production ?', ok: '\'Yes\''
-            openshiftTag(sourceStream: '${APPLICATION_NAME}', sourceTag: 'dev', destinationStream: '${APPLICATION_NAME}', destinationTag: 'prod' , namespace: '${PROJECT_NAME}-dev', destinationNamespace: '${PROJECT_NAME}-dev')
+            openshiftTag(sourceStream: '${APP_NAME}', sourceTag: 'dev', destinationStream: '${APP_NAME}', destinationTag: 'prod' , namespace: '${PROJECT_NAME}-dev', destinationNamespace: '${PROJECT_NAME}-dev')
+
+            stage 'deployToProd ${PROJECT_NAME}-prod'
+            openshiftDeploy(deploymentConfig: '${APP_NAME}', namespace: '${PROJECT_NAME}-prod')
           }
 parameters:
 - description: The name for the application.
